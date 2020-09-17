@@ -1,13 +1,13 @@
 spring:
   datasource:
     #    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/jpa_ex?useSSL=false&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/jpa_ex2?useSSL=false&serverTimezone=Asia/Seoul
     username: jpa_user
     password: jpa_user
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
