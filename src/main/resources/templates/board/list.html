@@ -88,13 +88,22 @@
                 formObj.find("[name='page']").val("1");
                 formObj.submit();
             });
+            $(".boardLink").on("click",function (e) {
+                e.preventDefault();
+                var bno=$(this).attr("href");
+                console.log(bno)
+                formObj.attr("action","/board/view");
+                formObj.append("<input type='hidden' name='bno' value='"+bno+"'>");
 
+                formObj.submit();
+            })
         });
         $(window).load(function () {
             var msg=[[${msg}]];
             if(msg=='success'){
                 alert("정상적으로 처리되었습니다.");
             }
-        })
+        });
+
     </script>
 </th:block>

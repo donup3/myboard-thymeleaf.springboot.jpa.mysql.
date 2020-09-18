@@ -25,27 +25,33 @@ public class BoardController {
     private final BoardRepository boardRepository;
 
     @GetMapping("/list")
-    public void list(@ModelAttribute("pageDto")PageDto pageDto, Model model){
+    public void list(@ModelAttribute("pageDto") PageDto pageDto, Model model) {
         log.info("get list.......");
         Pageable pageable = pageDto.makePageable(0, "bno");
 
         Page<Board> result = boardRepository.findAll(pageDto.getType(), pageDto.getKeyword(), pageable);
 
-        model.addAttribute("result",new PageMaker(result));
+        model.addAttribute("result", new PageMaker(result));
     }
 
     @GetMapping("/register")
-    public void registerGET(@ModelAttribute("board")Board board){
+    public void registerGET(@ModelAttribute("board") Board board) {
         log.info("register board...");
     }
 
     @PostMapping("/register")
-    public String registerPost(@ModelAttribute("board")Board board, RedirectAttributes rttr){
+    public String registerPost(@ModelAttribute("board") Board board, RedirectAttributes rttr) {
         log.info("register board post...");
 
         boardRepository.save(board);
-        rttr.addFlashAttribute("msg","success");
+        rttr.addFlashAttribute("msg", "success");
 
         return "redirect:/board/list";
+    }
+
+    @GetMapping("/view")
+    public void view(Long bno, @ModelAttribute("pageDto") PageDto pageDto, Model model) {
+        log.info("BNO: " + bno);
+        boardRepository.findById(bno).ifPresent(board -> model.addAttribute("board", board));
     }
 }
