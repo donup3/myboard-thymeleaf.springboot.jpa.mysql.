@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -22,11 +23,11 @@ public class BoardController {
     private final BoardRepository boardRepository;
 
     @GetMapping("/list")
-    public void list(PageDto pageDto, Model model){
+    public void list(@ModelAttribute("pageDto")PageDto pageDto, Model model){
         log.info("get list.......");
         Pageable pageable = pageDto.makePageable(0, "bno");
 
-        Page<Board> result = boardRepository.findAll(null, null, pageable);
+        Page<Board> result = boardRepository.findAll(pageDto.getType(), pageDto.getKeyword(), pageable);
 
         model.addAttribute("result",new PageMaker(result));
     }

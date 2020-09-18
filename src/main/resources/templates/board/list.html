@@ -27,6 +27,16 @@
                 </tr>
                 </tbody>
             </table>
+            <div>
+                <select id="searchType" class="badge">
+                    <option>--</option>
+                    <option value="t" th:selected="${pageDto.type}=='t'">Title</option>
+                    <option value="w" th:selected="${pageDto.type}=='w'">Writer</option>
+                    <option value="c" th:selected="${pageDto.type}=='c'">Content</option>
+                </select>
+                <input type="text" id="searchKeyword" th:value="${pageDto.keyword}">
+                <button class="btn btn-outline btn-success" id="searchBtn">Search</button>
+            </div>
         </div>
         <nav>
             <div>
@@ -50,6 +60,8 @@
         <form id="f1" th:action="@{list}" method="get">
             <input type="hidden" name="page" th:value="${result.currentPageNum}">
             <input type="hidden" name="size" th:value="${result.currentPage.pageSize}">
+            <input type="hidden" name="type" th:value="${pageDto.type}">
+            <input type="hidden" name="keyword" th:value="${pageDto.keyword}">
         </form>
     </div>
 </div>
@@ -57,12 +69,22 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         $(document).ready(function () {
-            console.log("hi")
+            console.log("hi");
             var formObj = $("#f1");
 
             $(".pagination a").on("click", function (e) {
                 e.preventDefault();
                 formObj.find('[name="page"]').val($(this).attr('href'));
+                formObj.submit();
+            });
+
+            $("#searchBtn").on("click",function (e) {
+                var type=$("#searchType").find(":selected").val();
+                var keyword=$("#searchKeyword").val();
+
+                formObj.find("[name='type']").val(type);
+                formObj.find("[name='keyword']").val(keyword);
+                formObj.find("[name='page']").val("1");
                 formObj.submit();
             });
         });

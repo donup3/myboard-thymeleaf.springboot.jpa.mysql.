@@ -27,7 +27,7 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository {
     public Page<Board> findAll(String type, String keyword, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(board.bno.gt(0));
-        if(type!=null&&(!type.equals("--"))){
+        if(type!=null){
             switch (type){
                 case "t":
                     builder.and(board.title.like("%"+keyword+"%"));
