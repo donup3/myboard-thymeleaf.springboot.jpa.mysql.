@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,8 +30,8 @@ public class Board {
     private String content;
 
     @CreationTimestamp
-    private LocalDateTime regdate;
+    private Timestamp regdate;
 
     @UpdateTimestamp
-    private LocalDateTime updatedate;
+    private Timestamp updatedate;
 }
