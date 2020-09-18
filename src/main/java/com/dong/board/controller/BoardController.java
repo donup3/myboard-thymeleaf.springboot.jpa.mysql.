@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Log4j2
@@ -30,5 +32,20 @@ public class BoardController {
         Page<Board> result = boardRepository.findAll(pageDto.getType(), pageDto.getKeyword(), pageable);
 
         model.addAttribute("result",new PageMaker(result));
+    }
+
+    @GetMapping("/register")
+    public void registerGET(@ModelAttribute("board")Board board){
+        log.info("register board...");
+    }
+
+    @PostMapping("/register")
+    public String registerPost(@ModelAttribute("board")Board board, RedirectAttributes rttr){
+        log.info("register board post...");
+
+        boardRepository.save(board);
+        rttr.addFlashAttribute("msg","success");
+
+        return "redirect:/board/list";
     }
 }

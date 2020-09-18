@@ -6,6 +6,7 @@
 <div layout:fragment="content">
     <div class="panel-heading">
         List Page
+        <a class="btn btn-info btn-xs pull-right" style="font-size: 15px" th:href="@{register}">Register</a>
     </div>
     <div class="panel-body">
         <div th:with="result=${result.result}">
@@ -35,7 +36,7 @@
                     <option value="c" th:selected="${pageDto.type}=='c'">Content</option>
                 </select>
                 <input type="text" id="searchKeyword" th:value="${pageDto.keyword}">
-                <button class="btn btn-outline btn-success" id="searchBtn">Search</button>
+                <button class="btn btn-success" id="searchBtn">Search</button>
             </div>
         </div>
         <nav>
@@ -87,6 +88,13 @@
                 formObj.find("[name='page']").val("1");
                 formObj.submit();
             });
+
         });
+        $(window).load(function () {
+            var msg=[[${msg}]];
+            if(msg=='success'){
+                alert("정상적으로 처리되었습니다.");
+            }
+        })
     </script>
 </th:block>

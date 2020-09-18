@@ -34,8 +34,6 @@ public class PageMaker<T> {
 
     private void calcPages() {
         int tempEndNum = (int) (Math.ceil(this.currentPageNum / 10.0) * 10);
-        System.out.println("tempEndNum = " + tempEndNum);
-        System.out.println("this.totalPageNum = " + this.totalPageNum);
         int startNum = tempEndNum - 9;
 
         Pageable startPage = this.currentPage;
