@@ -30,7 +30,6 @@ public class BoardController {
         Pageable pageable = pageDto.makePageable(0, "bno");
 
         Page<Board> result = boardRepository.findAll(pageDto.getType(), pageDto.getKeyword(), pageable);
-
         model.addAttribute("result", new PageMaker(result));
     }
 
@@ -53,5 +52,27 @@ public class BoardController {
     public void view(Long bno, @ModelAttribute("pageDto") PageDto pageDto, Model model) {
         log.info("BNO: " + bno);
         boardRepository.findById(bno).ifPresent(board -> model.addAttribute("board", board));
+    }
+
+    @GetMapping("/modify")
+    public void modify(Long bno,@ModelAttribute("pageDto")PageDto pageDto,Model model){
+        log.info("Modify bno: "+bno);
+
+        boardRepository.findById(bno).ifPresent(board -> model.addAttribute("board", board));
+    }
+
+    @PostMapping("/delete")
+    public String delete(Long bno, PageDto pageDto,RedirectAttributes rttr){
+        log.info("delete board bno: "+bno);
+        boardRepository.deleteById(bno);
+
+        rttr.addFlashAttribute("msg","success");
+
+        rttr.addAttribute("page",pageDto.getPage());
+        rttr.addAttribute("size",pageDto.getSize());
+        rttr.addAttribute("type",pageDto.getType());
+        rttr.addAttribute("keyword",pageDto.getKeyword());
+
+        return "redirect:/board/list";
     }
 }

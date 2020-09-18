@@ -79,30 +79,32 @@
                 formObj.submit();
             });
 
-            $("#searchBtn").on("click",function (e) {
-                var type=$("#searchType").find(":selected").val();
-                var keyword=$("#searchKeyword").val();
+            $("#searchBtn").on("click", function (e) {
+                var type = $("#searchType").find(":selected").val();
+                var keyword = $("#searchKeyword").val();
 
                 formObj.find("[name='type']").val(type);
                 formObj.find("[name='keyword']").val(keyword);
                 formObj.find("[name='page']").val("1");
                 formObj.submit();
             });
-            $(".boardLink").on("click",function (e) {
+
+            $(".boardLink").on("click", function (e) {
                 e.preventDefault();
-                var bno=$(this).attr("href");
+                var bno = $(this).attr("href");
                 console.log(bno)
-                formObj.attr("action","/board/view");
-                formObj.append("<input type='hidden' name='bno' value='"+bno+"'>");
+                formObj.attr("action", "/board/view");
+                formObj.append("<input type='hidden' name='bno' value='" + bno + "'>");
 
                 formObj.submit();
-            })
-        });
-        $(window).load(function () {
-            var msg=[[${msg}]];
-            if(msg=='success'){
-                alert("정상적으로 처리되었습니다.");
-            }
+            });
+
+            $(window).load(function () {
+                var msg = [[${msg}]];
+                if (msg == 'success') {
+                    alert("정상적으로 처리되었습니다.");
+                }
+            });
         });
 
     </script>

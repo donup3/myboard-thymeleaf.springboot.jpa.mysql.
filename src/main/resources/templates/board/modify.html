@@ -1,0 +1,65 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout1}">
+<div layout:fragment="content">
+    <div class="panel-heading">
+        Modify Page
+    </div>
+    <div class="panel-body">
+        <form id="f1">
+            <div class="form-group">
+                <label>Bno</label>
+                <input class="form-control" name="bno" readonly="readonly" th:value="${board.bno}">
+            </div>
+
+            <div class="form-group">
+                <label>Title</label>
+                <input class="form-control" name="title" th:value="${board.title}">
+                <p class="help-block">Title text here.</p>
+            </div>
+
+            <div class="form-group">
+                <label>Content</label>
+                <textarea class="form-control" rows="3" name="content" th:text="${board.content}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Writer</label>
+                <input class="form-control" name="writer" readonly="readonly" th:value="${board.writer}">
+            </div>
+
+            <input type="hidden" name="page" th:value="${pageDto.page}">
+            <input type="hidden" name="size" th:value="${pageDto.size}">
+            <input type="hidden" name="type" th:value="${pageDto.type}">
+            <input type="hidden" name="keyword" th:value="${pageDto.keyword}">
+        </form>
+
+        <div class="form-group">
+            <label>RegDate</label>
+            <input class="form-control" name="regdate" readonly="readonly"
+                   th:value="${#dates.format(board.regdate,'yyyy-MM-dd')}">
+        </div>
+        <div class="pull-right">
+            <a href="#" class="btn btn-warning modBtn">Modify</a>
+            <a href="#" class="btn btn-danger delBtn">Delete</a>
+            <a th:href="@{list(page=${pageDto.page},size=${pageDto.size},type=${pageDto.type},keyword=${pageDto.keyword},bno=${board.bno})}"
+               class="btn btn-info">Cancel & List
+            </a>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            var formObj=$("#f1");
+
+            $(".delBtn").on("click",function (e) {
+                formObj.attr("action","/board/delete");
+                formObj.attr("method","post");
+
+                formObj.submit();
+            });
+        });
+    </script>
+</th:block>
