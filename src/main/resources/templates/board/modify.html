@@ -60,6 +60,13 @@
 
                 formObj.submit();
             });
+            $(".modBtn").on("click",function (e) {
+                formObj.attr("action","/board/modify");
+                formObj.attr("method","post");
+
+                formObj.submit();
+            });
+
         });
     </script>
 </th:block>

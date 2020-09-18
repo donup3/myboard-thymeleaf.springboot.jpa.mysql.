@@ -55,24 +55,45 @@ public class BoardController {
     }
 
     @GetMapping("/modify")
-    public void modify(Long bno,@ModelAttribute("pageDto")PageDto pageDto,Model model){
-        log.info("Modify bno: "+bno);
+    public void modify(Long bno, @ModelAttribute("pageDto") PageDto pageDto, Model model) {
+        log.info("Modify bno: " + bno);
 
         boardRepository.findById(bno).ifPresent(board -> model.addAttribute("board", board));
     }
 
+    @PostMapping("/modify")
+    public String modify(Board board, PageDto pageDto, RedirectAttributes rttr) {
+        boardRepository.findById(board.getBno()).ifPresent(origin -> {
+            origin.setTitle(board.getTitle());
+            origin.setContent(board.getContent());
+
+            boardRepository.save(origin);
+
+            rttr.addFlashAttribute("msg", "success");
+            rttr.addAttribute("bno", origin.getBno());
+        });
+        rttr.addAttribute("page", pageDto.getPage());
+        rttr.addAttribute("size", pageDto.getSize());
+        rttr.addAttribute("type", pageDto.getType());
+        rttr.addAttribute("keyword", pageDto.getKeyword());
+
+        return "redirect:/board/view";
+    }
+
     @PostMapping("/delete")
-    public String delete(Long bno, PageDto pageDto,RedirectAttributes rttr){
-        log.info("delete board bno: "+bno);
+    public String delete(Long bno, PageDto pageDto, RedirectAttributes rttr) {
+        log.info("delete board bno: " + bno);
         boardRepository.deleteById(bno);
 
-        rttr.addFlashAttribute("msg","success");
+        rttr.addFlashAttribute("msg", "success");
 
-        rttr.addAttribute("page",pageDto.getPage());
-        rttr.addAttribute("size",pageDto.getSize());
-        rttr.addAttribute("type",pageDto.getType());
-        rttr.addAttribute("keyword",pageDto.getKeyword());
+        rttr.addAttribute("page", pageDto.getPage());
+        rttr.addAttribute("size", pageDto.getSize());
+        rttr.addAttribute("type", pageDto.getType());
+        rttr.addAttribute("keyword", pageDto.getKeyword());
 
         return "redirect:/board/list";
     }
+
+
 }
