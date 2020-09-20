@@ -8,15 +8,11 @@ import com.dong.board.repository.reply.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Log4j2
@@ -50,6 +46,38 @@ public class ReplyController {
         Pageable pageable = makePageDto(page);
 
         return new ResponseEntity<>(new PageMaker(getListByBoard(board,pageable)),HttpStatus.OK);
+    }
+
+    @Transactional
+    @DeleteMapping("/{bno}/{rno}")
+    public ResponseEntity<PageMaker<Reply>> remove(@PathVariable("bno")Long bno,@PathVariable("rno")Long rno){
+        replyRepository.deleteById(rno);
+
+        Board board=new Board();
+        board.setBno(bno);
+
+        Pageable pageable=makePageDto(1);
+
+        return new ResponseEntity<>(new PageMaker<>(getListByBoard(board,pageable)),HttpStatus.OK);
+    }
+
+    @Transactional
+    @PutMapping("/{bno}/{page}")
+    public ResponseEntity<PageMaker<Reply>> update(@PathVariable("bno")Long bno,@PathVariable("page")int page,@RequestBody Reply reply){
+        log.info("UPDATE RNO: "+reply.getRno());
+
+        replyRepository.findById(reply.getRno()).ifPresent(origin->{
+            origin.setReplyText(reply.getReplyText());
+
+            replyRepository.save(origin);
+        });
+
+        Board board=new Board();
+        board.setBno(bno);
+
+        Pageable pageable=makePageDto(page);
+
+        return new ResponseEntity<>(new PageMaker<>(getListByBoard(board,pageable)),HttpStatus.CREATED);
     }
 
     private Page getListByBoard(Board board, Pageable pageable) throws RuntimeException{
