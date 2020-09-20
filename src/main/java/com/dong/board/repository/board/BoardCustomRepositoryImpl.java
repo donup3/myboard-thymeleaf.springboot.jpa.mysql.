@@ -1,7 +1,6 @@
-package com.dong.board.repository;
+package com.dong.board.repository.board;
 
 import com.dong.board.domain.Board;
-import com.dong.board.domain.QBoard;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;

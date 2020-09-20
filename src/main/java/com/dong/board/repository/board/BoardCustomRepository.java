@@ -1,4 +1,4 @@
-package com.dong.board.repository;
+package com.dong.board.repository.board;
 
 import com.dong.board.domain.Board;
 import org.springframework.data.domain.Page;

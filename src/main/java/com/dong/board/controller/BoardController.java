@@ -3,7 +3,7 @@ package com.dong.board.controller;
 import com.dong.board.domain.Board;
 import com.dong.board.dto.PageDto;
 import com.dong.board.dto.PageMaker;
-import com.dong.board.repository.BoardRepository;
+import com.dong.board.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;

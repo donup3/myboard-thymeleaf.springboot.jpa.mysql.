@@ -1,5 +1,6 @@
 package com.dong.board.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,26 +10,22 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "bno")
-@ToString(exclude = "replies")
-@Table(name = "tbl_board")
-public class Board {
+@ToString(exclude = "board")
+@EqualsAndHashCode(of = "rno")
+@Table(name = "tbl_reply")
+public class Reply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bno;
+    private Long rno;
 
-    private String title;
+    private String replyText;
 
-    private String writer;
-
-    private String content;
+    private String replyer;
 
     @CreationTimestamp
     private Timestamp regdate;
@@ -36,6 +33,9 @@ public class Board {
     @UpdateTimestamp
     private Timestamp updatedate;
 
-    @OneToMany(mappedBy = "board")
-    private List<Reply> replies=new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bno")
+    @JsonIgnore
+    private Board board;
+
 }

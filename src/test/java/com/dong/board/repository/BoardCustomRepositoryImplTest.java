@@ -1,7 +1,7 @@
 package com.dong.board.repository;
 
 import com.dong.board.domain.Board;
-import groovy.util.logging.Log4j2;
+import com.dong.board.repository.board.BoardRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

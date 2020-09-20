@@ -1,13 +1,12 @@
 package com.dong.board.repository;
 
 import com.dong.board.domain.Board;
+import com.dong.board.repository.board.BoardRepository;
 import groovy.util.logging.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Log4j2
