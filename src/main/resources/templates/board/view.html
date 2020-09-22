@@ -32,16 +32,72 @@
         </div>
         <div class="pull-right">
             <a th:href="@{modify(page=${pageDto.page},size=${pageDto.size},type=${pageDto.type},keyword=${pageDto.keyword},bno=${board.bno})}"
-                    class="btn btn-warning">Modify/Delete
+               class="btn btn-warning">Modify/Delete
             </a>
             <a th:href="@{list(page=${pageDto.page},size=${pageDto.size},type=${pageDto.type},keyword=${pageDto.keyword},bno=${board.bno})}"
-                    class="btn btn-info">List
+               class="btn btn-info">List
             </a>
         </div>
     </div>
-    <th:block layout:fragment="script">
-        <script th:inline="javascript">
-
-
-        </script>
-    </th:block>
+</div>
+<div layout:fragment="reply">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <i class="fa fa-comments fa-fw">&nbsp;Reply</i>
+                    <button id="addReplyBtn" class="btn btn-primary btn-xs pull-right">New Reply</button>
+                </div>
+                <div class="panel-body">
+                    <ul class="chat" style="margin:0;padding: 0">
+<!--                        <li class="left clearfix" data-rno='1' style="list-style: none">-->
+<!--                            <div style="margin: 0;padding: 0">-->
+<!--                                <div class="header">-->
+<!--                                    <strong class="primary-font" style="font-size: 13px">user00</strong>-->
+<!--                                    <small class="pull-right text-muted">2020-09-21 12:12</small>-->
+<!--                                </div>-->
+<!--                                <p style="margin-top: 10px;font-size: 15px">새로운 댓글1</p>-->
+<!--                                <hr style="background-color: #00b3ee; margin: 0">-->
+<!--                            </div>-->
+<!--                        </li>-->
+<!--                        <br>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+    <script th:inline="javascript" th:src="@{'/js/reply.js'}"></script>
+    <script th:inline="javascript">
+        $(document).ready(function (e) {
+            var page;
+            var obj = {bno: [[${board.bno}]], page: page || 1};
+            (function(){
+                replyManger.getAll(obj,printList);
+            })();
+            function printList(list) {
+                var content=list.result.content;
+                var replyUL=$(".chat");
+                if(content==null||content.length==0){
+                    replyUL.html("");
+                    return ;
+                }
+                var str="";
+                for(var i=0;i<content.length;i++){
+                    str+="<li style='list-style: none' data-rno='"+content[i].rno+"'>";
+                    str+="<div style='margin: 0;padding: 0'><div class='header'><strong class='primary-font' style='font-size: 13px'>"+content[i].replyer+"</strong>";
+                    str+="<small class='pull-right text-muted'>"+formatDate(content[i].regdate)+"</small></div>";
+                    str+="<p style='margin-top: 10px; font-size: 15px'>"+content[i].replyText+"</p></div></li>";
+                    str+="<hr style='border-top:1px solid #00b3ee; margin: 0;padding: 0'>";
+                    str+="<br>"
+                }
+                replyUL.html(str);
+            }
+            function formatDate(timeValue) {
+                var date=new Date(timeValue);
+                return date.getFullYear()+"-"+(date.getMonth()+1>=10?date.getMonth()+1:'0'+(date.getMonth()+1))+"-"+date.getDate()
+            }
+        });
+    </script>
+</th:block>

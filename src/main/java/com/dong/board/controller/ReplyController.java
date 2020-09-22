@@ -40,6 +40,7 @@ public class ReplyController {
 
     @GetMapping("/{bno}/{page}")
     public ResponseEntity<PageMaker<Reply>> getReplies(@PathVariable("bno")Long bno,@PathVariable("page")int page){
+        log.info("getRelies bno: "+bno);
         Board board=new Board();
         board.setBno(bno);
 
