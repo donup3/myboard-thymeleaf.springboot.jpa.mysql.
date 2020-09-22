@@ -9,6 +9,18 @@ var replyManger = (function () {
     }
     var add = function (obj, callback) {
         console.log("add........");
+        var bno = obj.bno;
+        var page = obj.page || 1;
+
+        $.ajax({
+            type:'post',
+            url: '/replies/pages/'+bno+"/"+page,
+            data: JSON.stringify(obj),
+            dataType: 'json',
+            contentType: "application/json",
+            success:callback
+        });
+
     }
     var update = function (obj, callback) {
         console.log("update........");
