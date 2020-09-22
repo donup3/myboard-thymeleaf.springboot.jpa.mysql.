@@ -50,17 +50,17 @@
                 </div>
                 <div class="panel-body">
                     <ul class="chat" style="margin:0;padding: 0">
-<!--                        <li class="left clearfix" data-rno='1' style="list-style: none">-->
-<!--                            <div style="margin: 0;padding: 0">-->
-<!--                                <div class="header">-->
-<!--                                    <strong class="primary-font" style="font-size: 13px">user00</strong>-->
-<!--                                    <small class="pull-right text-muted">2020-09-21 12:12</small>-->
-<!--                                </div>-->
-<!--                                <p style="margin-top: 10px;font-size: 15px">새로운 댓글1</p>-->
-<!--                                <hr style="background-color: #00b3ee; margin: 0">-->
-<!--                            </div>-->
-<!--                        </li>-->
-<!--                        <br>-->
+                        <!--                        <li class="left clearfix" data-rno='1' style="list-style: none">-->
+                        <!--                            <div style="margin: 0;padding: 0">-->
+                        <!--                                <div class="header">-->
+                        <!--                                    <strong class="primary-font" style="font-size: 13px">user00</strong>-->
+                        <!--                                    <small class="pull-right text-muted">2020-09-21 12:12</small>-->
+                        <!--                                </div>-->
+                        <!--                                <p style="margin-top: 10px;font-size: 15px">새로운 댓글1</p>-->
+                        <!--                                <hr style="background-color: #00b3ee; margin: 0">-->
+                        <!--                            </div>-->
+                        <!--                        </li>-->
+                        <!--                        <br>-->
                     </ul>
                 </div>
             </div>
@@ -77,11 +77,12 @@
                     <label>Reply Text</label>
                     <input type="text" class="form-control" name="replyText">
                     <label>Replyer</label>
-                    <input type="text" class="form-control" name="replyer">
+                    <input type="text" class="form-control" name="replyer" readonly="readonly">
                 </div>
                 <div class="modal-footer">
                     <button id="modalBtn" class="btn btn-info">Save</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="delModBtn" class="btn btn-danger">Delete</button>
                 </div>
             </div>
         </div>
@@ -93,71 +94,93 @@
         $(document).ready(function (e) {
             var page;
             var obj = {bno: [[${board.bno}]], page: page || 1};
-            (function(){
-                replyManger.getAll(obj,printList);
+
+            (function () {
+                replyManger.getAll(obj, printList);
             })();
+
             function printList(list) {
-                var content=list.result.content;
-                var replyUL=$(".chat");
-                if(content==null||content.length==0){
+                var content = list.result.content;
+                var replyUL = $(".chat");
+                if (content == null || content.length == 0) {
                     replyUL.html("");
-                    return ;
+                    return;
                 }
-                var str="";
-                for(var i=0;i<content.length;i++){
-                    str+="<li style='list-style: none' data-rno='"+content[i].rno+"' data-replyer='"+content[i].replyer+"' data-replytext='"+content[i].replyText+"'>";
-                    str+="<div style='margin: 0;padding: 0'><div class='header'><strong class='primary-font' style='font-size: 13px'>"+content[i].replyer+"</strong>";
-                    str+="<small class='pull-right text-muted'>"+formatDate(content[i].regdate)+"</small></div>";
-                    str+="<p style='margin-top: 10px; font-size: 15px'>"+content[i].replyText+"</p></div></li>";
-                    str+="<hr style='border-top:1px solid #00b3ee; margin: 0;padding: 0'>";
-                    str+="<br>"
+                var str = "";
+                for (var i = 0; i < content.length; i++) {
+                    str += "<li style='list-style: none' data-rno='" + content[i].rno + "' data-replyer='" + content[i].replyer + "' data-replytext='" + content[i].replyText + "'>";
+                    str += "<div style='margin: 0;padding: 0'><div class='header'><strong class='primary-font' style='font-size: 13px'>" + content[i].replyer + "</strong>";
+                    str += "<small class='pull-right text-muted'>" + formatDate(content[i].regdate) + "</small></div>";
+                    str += "<p style='margin-top: 10px; font-size: 15px'>" + content[i].replyText + "</p></div></li>";
+                    str += "<hr style='border-top:1px solid #00b3ee; margin: 0;padding: 0'>";
+                    str += "<br>"
                 }
                 replyUL.html(str);
             }
+
             function formatDate(timeValue) {
-                var date=new Date(timeValue);
-                return date.getFullYear()+"-"+(date.getMonth()+1>=10?date.getMonth()+1:'0'+(date.getMonth()+1))+"-"+date.getDate()
+                var date = new Date(timeValue);
+                return date.getFullYear() + "-" + (date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + "-" + date.getDate()
             }
 
             var mode;
-            $("#addReplyBtn").on("click",function (e) {
+            $("#addReplyBtn").on("click", function (e) {
                 replyTextObj.val("");
                 replyerObj.val("");
                 $("#mymodal").modal("show");
                 $(".modal-title").text("ADD Reply");
-                mode="ADD";
+                mode = "ADD";
             });
 
-            var bno=[[${board.bno}]]
-            var replyTextObj=$("input[name='replyText']");
-            var replyerObj=$("input[name='replyer']");
+            var bno = [[${board.bno}]]
+            var replyTextObj = $("input[name='replyText']");
+            var replyerObj = $("input[name='replyer']");
             var rno;
 
-            $("#modalBtn").on("click",function (e) {
-                var replyText=replyTextObj.val();
-                var replyer=replyerObj.val();
+            function afterAll(list) {
+                printList(list);
+                $("#mymodal").modal("hide");
+                replyTextObj.val("");
+                replyerObj.val("");
+            }
 
-                var obj={replyText:replyText,replyer:replyer,bno:bno};
+            $("#modalBtn").on("click", function (e) {
+                var replyText = replyTextObj.val();
+                var replyer = replyerObj.val();
 
-                replyManger.add(obj,function (list) {
-                    printList(list)
-                    alert("새로운 댓글이 추가되었습니다.");
-                    $("#mymodal").modal("hide");
-                    replyTextObj.val("");
-                    replyerObj.val("");
-                });
+                if (mode == "ADD") {
+                    var obj = {replyText: replyText, replyer: replyer, bno: bno};
+                    replyManger.add(obj, function (list) {
+                        alert("새로운 댓글이 추가되었습니다.");
+                        afterAll(list);
+                    });
+                } else if (mode == "MOD") {
+                    var obj = {replyText: replyText, bno: bno, rno: rno};
+                    replyManger.update(obj,function (list) {
+                        alert("댓글이 수정되었습니다.");
+                        afterAll(list);
+                    });
+                }
             });
 
-            $(".chat").on("click","li",function (e) {
-                rno=$(this).data("rno");
-                var replyerData=$(this).data("replyer");
-                var replyTextData=$(this).data("replytext");
-                mode="MOD";
+            $(".chat").on("click", "li", function (e) {
+                rno = $(this).data("rno");
+                var replyerData = $(this).data("replyer");
+                var replyTextData = $(this).data("replytext");
+                mode = "MOD";
 
                 replyerObj.val(replyerData);
                 replyTextObj.val(replyTextData);
                 $("#mymodal").modal("show");
                 $(".modal-title").text("Modify/Delete Reply");
+            })
+
+            $("#delModBtn").on("click", function (e) {
+                var obj = {bno: bno, rno: rno};
+                replyManger.remove(obj, function (list) {
+                    alert("댓글이 삭제되었습니다.");
+                    afterAll(list);
+                })
             })
         });
     </script>
