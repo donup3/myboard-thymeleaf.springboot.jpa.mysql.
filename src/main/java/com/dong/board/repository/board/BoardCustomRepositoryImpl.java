@@ -45,6 +45,7 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository {
         QueryResults<Board> result = queryFactory.selectFrom(board)
                 .orderBy(board.bno.desc())
                 .where(builder)
+                .leftJoin(board.replies).fetchJoin()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
