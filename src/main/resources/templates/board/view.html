@@ -63,6 +63,9 @@
                         <!--                        <br>-->
                     </ul>
                 </div>
+                <div class="panel-footer">
+
+                </div>
             </div>
         </div>
     </div>
@@ -92,15 +95,19 @@
     <script th:inline="javascript" th:src="@{'/js/reply.js'}"></script>
     <script th:inline="javascript">
         $(document).ready(function (e) {
-            var page;
+            var page = 1;
             var obj = {bno: [[${board.bno}]], page: page || 1};
-
+            var totalReplyCount;
             (function () {
                 replyManger.getAll(obj, printList);
             })();
 
             function printList(list) {
                 var content = list.result.content;
+                var replyCnt = list.result.totalElements;
+                totalReplyCount = replyCnt;
+                console.log("page: " + page)
+                console.log(replyCnt);
                 var replyUL = $(".chat");
                 if (content == null || content.length == 0) {
                     replyUL.html("");
@@ -116,6 +123,41 @@
                     str += "<br>"
                 }
                 replyUL.html(str);
+                printReplyPage(replyCnt);
+
+            }
+
+            function printReplyPage(replyCnt) {
+                var endNum = Math.ceil(page / 10.0) * 10;
+                var startNum = endNum - 9;
+                var replyPageFooter = $(".panel-footer");
+                var prev = startNum != 1;
+                var next = false;
+
+                if (endNum * 10 >= replyCnt) {
+                    endNum = Math.ceil(replyCnt / 10.0);
+                }
+                if (endNum * 10 < replyCnt) {
+                    next = true;
+                }
+                var str = "<ul class='pagination pull-right'>";
+                if (prev) {
+                    str += "<li class='page-item'><a class='page-link' href='" + (startNum - 1) + "'>Previous</a></li>"
+                }
+                for (var i = startNum; i <= endNum; i++) {
+                    var active = page == i ? "active" : "";
+                    console.log("Page: " + page)
+                    console.log(active)
+                    console.log("i: " + i)
+                    console.log("----------------------")
+                    str += "<li class='page-item " + active + "'><a class='page-link' href='" + i + "'>" + i + "</a></li>";
+                }
+                if (next) {
+                    str += "<li class='page-item'><a class='page-link' href='" + (endNum + 1) + "'>Next</a></li>"
+                }
+                str += "</ul></div>";
+                replyPageFooter.html(str);
+
             }
 
             function formatDate(timeValue) {
@@ -149,14 +191,15 @@
                 var replyer = replyerObj.val();
 
                 if (mode == "ADD") {
-                    var obj = {replyText: replyText, replyer: replyer, bno: bno};
+                    page = Math.ceil(totalReplyCount / 10.0);
+                    var obj = {replyText: replyText, replyer: replyer, bno: bno, page: page};
                     replyManger.add(obj, function (list) {
                         alert("새로운 댓글이 추가되었습니다.");
                         afterAll(list);
                     });
                 } else if (mode == "MOD") {
-                    var obj = {replyText: replyText, bno: bno, rno: rno};
-                    replyManger.update(obj,function (list) {
+                    var obj = {replyText: replyText, bno: bno, rno: rno, page: page};
+                    replyManger.update(obj, function (list) {
                         alert("댓글이 수정되었습니다.");
                         afterAll(list);
                     });
@@ -173,15 +216,25 @@
                 replyTextObj.val(replyTextData);
                 $("#mymodal").modal("show");
                 $(".modal-title").text("Modify/Delete Reply");
-            })
+            });
 
             $("#delModBtn").on("click", function (e) {
-                var obj = {bno: bno, rno: rno};
+                var obj = {bno: bno, rno: rno, page: page};
                 replyManger.remove(obj, function (list) {
                     alert("댓글이 삭제되었습니다.");
                     afterAll(list);
                 })
-            })
+            });
+
+            $(".panel-footer").on("click", "li a", function (e) {
+                e.preventDefault();
+                var targetPageNum = $(this).attr("href");
+                page = targetPageNum;
+                var obj = {bno: bno, page: page};
+                replyManger.getAll(obj, function (list) {
+                    afterAll(list);
+                })
+            });
         });
     </script>
 </th:block>

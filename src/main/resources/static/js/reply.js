@@ -44,10 +44,11 @@ var replyManger = (function () {
         console.log("get remove........");
         var bno = obj.bno;
         var rno=obj.rno;
+        var page = obj.page || 1;
 
         $.ajax({
             type:'delete',
-            url: '/replies/pages/'+bno+"/"+rno,
+            url: '/replies/pages/'+bno+"/"+rno+"/"+page,
             dataType: 'json',
             contentType: "application/json",
             success:callback

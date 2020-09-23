@@ -50,14 +50,14 @@ public class ReplyController {
     }
 
     @Transactional
-    @DeleteMapping("/{bno}/{rno}")
-    public ResponseEntity<PageMaker<Reply>> remove(@PathVariable("bno")Long bno,@PathVariable("rno")Long rno){
+    @DeleteMapping("/{bno}/{rno}/{page}")
+    public ResponseEntity<PageMaker<Reply>> remove(@PathVariable("bno")Long bno,@PathVariable("page")int page,@PathVariable("rno")Long rno){
         replyRepository.deleteById(rno);
 
         Board board=new Board();
         board.setBno(bno);
 
-        Pageable pageable=makePageDto(1);
+        Pageable pageable=makePageDto(page);
 
         return new ResponseEntity<>(new PageMaker<>(getListByBoard(board,pageable)),HttpStatus.OK);
     }
