@@ -146,10 +146,6 @@
                 }
                 for (var i = startNum; i <= endNum; i++) {
                     var active = page == i ? "active" : "";
-                    console.log("Page: " + page)
-                    console.log(active)
-                    console.log("i: " + i)
-                    console.log("----------------------")
                     str += "<li class='page-item " + active + "'><a class='page-link' href='" + i + "'>" + i + "</a></li>";
                 }
                 if (next) {
