@@ -10,6 +10,11 @@
     <input type="file" name="uploadFile" multiple>
 </div>
 <button id="uploadBtn">Upload</button>
+<div class="uploadResult">
+    <ul>
+
+    </ul>
+</div>
 <script src="https://code.jquery.com/jquery-3.5.1.js"
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 </body>
@@ -31,18 +36,18 @@
             return true;
         }
 
+        var cloneObj=$(".uploadDiv").clone();
+
         $("#uploadBtn").on("click", function (e) {
             var formData = new FormData();
             var inputFile = $("input[name='uploadFile']");
             var files = inputFile[0].files;
-            console.log(files);
 
             for (var i = 0; i < files.length; i++) {
-                console.log("dd")
                 if (!checkExtension(files[i].name, files[i].size)) {
                     return false;
                 }
-                    formData.append("uploadFile", files[i]);
+                formData.append("uploadFile", files[i]);
             }
 
             $.ajax({
@@ -51,10 +56,48 @@
                 contentType: false,
                 data: formData,
                 type: 'POST',
+                dataType: 'json',
                 success: function (result) {
-                    alert("Uploaded");
+                    console.log(result)
+                    showUploadFile(result);
+                    $(".uploadDiv").html(cloneObj.html());
                 }
             });
         });
+
+        var uploadResult=$(".uploadResult ul");
+
+        function showUploadFile(uploadResultArr){
+            var str="";
+            $(uploadResultArr).each(function (i,obj) {
+                if(!obj.image){
+                    str+="<li><img src='/resouces/static/img/attach.png'>"+obj.fileName+"</li>";
+                }else{
+                    var fileCallPath=encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
+                    str+="<li><img src='/display?fileName="+fileCallPath+"'></li>";
+                }
+            });
+            uploadResult.append(str);
+        }
     });
 </script>
+<style>
+    .uploadResult{
+        width: 100%;
+        background-color: #65a7ee;
+    }
+    .uploadResult ul{
+        display: flex;
+        flex-flow: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .uploadResult ul li{
+        list-style: none;
+        padding: 15px;
+    }
+    .uploadResult ul li img{
+        width: 150px;
+        height: 150px;
+    }
+</style>
