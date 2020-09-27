@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "bno")
-@ToString(exclude = "replies")
+@ToString(exclude = {"replies","attachList"})
 @Table(name = "tbl_board")
 public class Board {
 

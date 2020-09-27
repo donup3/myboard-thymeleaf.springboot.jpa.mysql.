@@ -1,5 +1,6 @@
 package com.dong.board.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,10 +24,11 @@ public class BoardAttach {
     private String fileName;
 
     @Column(name = "fileType")
-    private String fileType;
+    private boolean fileType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bno")
+    @JsonIgnore
     private Board board;
 
 
