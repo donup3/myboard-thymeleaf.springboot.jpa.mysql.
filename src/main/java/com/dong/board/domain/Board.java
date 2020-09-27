@@ -38,4 +38,7 @@ public class Board {
 
     @OneToMany(mappedBy = "board")
     private List<Reply> replies=new ArrayList<>();
+
+    @OneToMany(mappedBy = "board")
+    private List<BoardAttach> attachList=new ArrayList<>();
 }
