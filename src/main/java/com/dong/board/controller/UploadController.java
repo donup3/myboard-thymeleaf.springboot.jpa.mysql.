@@ -3,6 +3,8 @@ package com.dong.board.controller;
 import com.dong.board.dto.AttachFileDto;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,13 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,6 +85,34 @@ public class UploadController {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @GetMapping("/download")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent")String userAgent, String fileName){
+        Resource resource=new FileSystemResource("C:\\upload\\"+fileName);
+        if(!resource.exists()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        String resourceName=resource.getFilename();
+        String resourceOriginalName=resourceName.substring(resourceName.indexOf("-")+1);
+        HttpHeaders headers=new HttpHeaders();
+
+        try{
+            String downloadName=null;
+            if(userAgent.contains("Trident")){
+                downloadName= URLEncoder.encode(resourceOriginalName,"UTF-8").replaceAll("\\+"," ");
+            }else if(userAgent.contains("Edge")){
+                downloadName= URLEncoder.encode(resourceOriginalName,"UTF-8");
+            }else{
+                downloadName=new String(resourceOriginalName.getBytes("UTF-8"),"ISO-8859-1");
+            }
+            headers.add("Content-Disposition","attachment; filename="+downloadName);
+        }catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(resource,headers,HttpStatus.OK);
     }
     private String getFolder() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
