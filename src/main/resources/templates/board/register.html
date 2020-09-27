@@ -34,7 +34,7 @@
                     File Attach
                 </div>
                 <div class="panel-body">
-                    <div class="form-group uploadDiv">
+                    <div  id="uploadDiv" class="form-group">
                         <input type="file" name="uploadFile" multiple>
                     </div>
                     <div class="uploadResult">
@@ -81,7 +81,7 @@
                 return true;
             }
 
-            var cloneObj = $(".uploadDiv").clone();
+            var cloneUploadDiv = $("#uploadDiv").clone();
 
             $("input[type='file']").change(function (e) {
                 var formData = new FormData();
@@ -105,7 +105,7 @@
                     success: function (result) {
                         console.log(result)
                         showUploadFile(result);
-                        $(".uploadDiv").html(cloneObj.html());
+                        $(".uploadDiv").html(cloneUploadDiv.html());
                     }
                 });
             });
@@ -131,7 +131,6 @@
                         str += "</li>";
                     } else {
                         var fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
-                        var fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
                         str += "<li data-path='" + obj.uploadPath + "'";
                         str += " data-uuid='" + obj.uuid + "' data-filename='" + obj.fileName + "' data-type='" + obj.image + "'"
                         str += " ><div>";

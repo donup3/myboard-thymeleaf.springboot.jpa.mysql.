@@ -3,6 +3,7 @@ package com.dong.board.dto;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class PageDto {
     private static final int DEFAULT_SIZE = 10;
@@ -55,5 +56,15 @@ public class PageDto {
         Sort.Direction dir=direction==0? Sort.Direction.DESC: Sort.Direction.ASC;
 
         return PageRequest.of(this.page-1,this.size,dir,props);
+    }
+
+    public String getListLink(){
+        UriComponentsBuilder builder=UriComponentsBuilder.fromPath("")
+                .queryParam("page",this.page)
+                .queryParam("size",this.size)
+                .queryParam("type",this.getType())
+                .queryParam("keyword",this.getKeyword())
+;
+        return builder.toUriString();
     }
 }

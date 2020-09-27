@@ -18,6 +18,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -84,27 +88,24 @@ public class BoardController {
             rttr.addFlashAttribute("msg", "success");
             rttr.addAttribute("bno", origin.getBno());
         });
-        rttr.addAttribute("page", pageDto.getPage());
-        rttr.addAttribute("size", pageDto.getSize());
-        rttr.addAttribute("type", pageDto.getType());
-        rttr.addAttribute("keyword", pageDto.getKeyword());
 
-        return "redirect:/board/view";
+        return "redirect:/board/view"+pageDto.getListLink();
     }
 
     @PostMapping("/delete")
+    @Transactional
     public String delete(Long bno, PageDto pageDto, RedirectAttributes rttr) {
         log.info("delete board bno: " + bno);
+
+        List<BoardAttach> attaches = boardAttachRepository.findByBno(bno);
+
+        boardAttachRepository.deleteByBno(bno);
+        deleteFiles(attaches);
         boardRepository.deleteById(bno);
 
         rttr.addFlashAttribute("msg", "success");
 
-        rttr.addAttribute("page", pageDto.getPage());
-        rttr.addAttribute("size", pageDto.getSize());
-        rttr.addAttribute("type", pageDto.getType());
-        rttr.addAttribute("keyword", pageDto.getKeyword());
-
-        return "redirect:/board/list";
+        return "redirect:/board/list"+pageDto.getListLink();
     }
 
     @GetMapping("/getAttachList")
@@ -115,4 +116,22 @@ public class BoardController {
         return new ResponseEntity<>(boardAttachList, HttpStatus.OK);
     }
 
+
+    private void deleteFiles(List<BoardAttach> attachList){
+        if(attachList==null||attachList.size()==0){
+            return;
+        }
+        attachList.forEach(attach->{
+            try{
+                Path file= Paths.get("C:\\upload\\"+attach.getUploadPath()+"\\"+attach.getUuid()+"_"+attach.getFileName());
+                Files.deleteIfExists(file);
+                if(Files.probeContentType(file).startsWith("image")){
+                    Path thumbNail=Paths.get("C:\\upload\\"+attach.getUploadPath()+"\\s_"+attach.getUuid()+"_"+attach.getFileName());
+                    Files.delete(thumbNail);
+                }
+            }catch (Exception e){
+                log.error("delete file error "+e.getMessage());
+            }
+        });
+    }
 }
