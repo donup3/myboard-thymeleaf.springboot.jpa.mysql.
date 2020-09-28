@@ -49,23 +49,163 @@
         </div>
     </div>
 </div>
+<div layout:fragment="attach">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    File Attach
+                </div>
+                <div class="panel-body">
+                    <div id="uploadDiv" class="form-group">
+                        <input type="file" name="uploadFile" multiple>
+                    </div>
+                    <div class="uploadResult">
+                        <ul>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <th:block layout:fragment="script">
     <script th:inline="javascript">
         $(document).ready(function () {
-            var formObj=$("#f1");
+            var formObj = $("#f1");
 
-            $(".delBtn").on("click",function (e) {
-                formObj.attr("action","/board/delete");
-                formObj.attr("method","post");
-
-                formObj.submit();
-            });
-            $(".modBtn").on("click",function (e) {
-                formObj.attr("action","/board/modify");
-                formObj.attr("method","post");
+            $(".delBtn").on("click", function (e) {
+                formObj.attr("action", "/board/delete");
+                formObj.attr("method", "post");
 
                 formObj.submit();
             });
+            $(".modBtn").on("click", function (e) {
+                formObj.attr("action", "/board/modify");
+                formObj.attr("method", "post");
+                var str="";
+                $(".uploadResult ul li").each(function (i,obj) {
+                    var jobj=$(obj);
+                    console.log(jobj);
+                    str += "<input type='hidden' name='attachList[" + i + "].fileName' value='" + jobj.data("filename") + "'>";
+                    str += "<input type='hidden' name='attachList[" + i + "].uuid' value='" + jobj.data("uuid") + "'>";
+                    str += "<input type='hidden' name='attachList[" + i + "].uploadPath' value='" + jobj.data("path") + "'>";
+                    str += "<input type='hidden' name='attachList[" + i + "].fileType' value='" + jobj.data("type") + "'>";
+                })
+                formObj.append(str).submit();
+            });
+            <!--파일-->
+            var bno = [[${board.bno}]];
+            (function () {
+                $.getJSON("/board/getAttachList", {bno: bno}, function (arr) {
+                    console.log(arr);
+                    var str = "";
+                    $(arr).each(function (i, attach) {
+                        if (attach.fileType) {
+                            var fileCallPath = encodeURIComponent(attach.uploadPath + "/s_" + attach.uuid + "_" + attach.fileName);
+                            str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' data-filename='" + attach.fileName + "' data-type='" + attach.fileType + "'><div>";
+                            str += "<span>"+attach.fileName+"</span>";
+                            str += "&nbsp;<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+                            str += "<img src='/display?fileName=" + fileCallPath + "'>";
+                            str += "</div></li>";
+                        } else {
+                            var fileCallPath = encodeURIComponent(attach.uploadPath + "/" + attach.uuid + "_" + attach.fileName);
+                            str += "<li data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid + "' data-filename='" + attach.fileName + "' data-type='" + attach.fileType + "'><div>";
+                            str += "<span><a href='#'>" + attach.fileName + "</span></a><br/>";
+                            str += "&nbsp;<button type='button' data-file=\'" + fileCallPath + "\' data-type='file' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+                            str += "<img src='/img/attach.png'>";
+                            str += "</div></li>";
+                        }
+                    });
+                    $(".uploadResult ul").html(str);
+                });
+            })();
+            var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+            var maxSize = 5242880;
+
+            function checkExtension(fileName, fileSize) {
+                if (fileSize >= maxSize) {
+                    alert("파일 크기 초과");
+                    return false;
+                }
+                if (regex.test(fileName)) {
+                    alert("해당 종류의 파일은 업로드할 수 없습니다.");
+                    return false;
+                }
+                return true;
+            }
+
+            var cloneUploadDiv = $("#uploadDiv").clone();
+
+            $("input[type='file']").change(function (e) {
+                var formData = new FormData();
+                var inputFile = $("input[name='uploadFile']");
+                var files = inputFile[0].files;
+
+                for (var i = 0; i < files.length; i++) {
+                    if (!checkExtension(files[i].name, files[i].size)) {
+                        return false;
+                    }
+                    formData.append("uploadFile", files[i]);
+                }
+
+                $.ajax({
+                    url: '/uploadAjaxAction',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (result) {
+                        console.log(result)
+                        showUploadFile(result);
+                        $(".uploadDiv").html(cloneUploadDiv.html());
+                    }
+                });
+            });
+
+            function showUploadFile(uploadResultArr) {
+                if (!uploadResultArr || uploadResultArr.length == 0) {
+                    return;
+                }
+                var str = "";
+                var uploadUL = $(".uploadResult ul");
+
+                $(uploadResultArr).each(function (i, obj) {
+                    if (obj.image) {
+                        console.log(obj.fileName);
+                        var fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+                        str += "<li data-path='" + obj.uploadPath + "'";
+                        str += " data-uuid='" + obj.uuid + "' data-filename='" + obj.fileName + "' data-type='" + obj.image + "'"
+                        str += " ><div>";
+                        str += "<span>" + obj.fileName + "</span>";
+                        str += "<button type='button' data-file=\'" + fileCallPath + "\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+                        str += "<img src='/display?fileName=" + fileCallPath + "'>";
+                        str += "</div>";
+                        str += "</li>";
+                    } else {
+                        var fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+                        str += "<li data-path='" + obj.uploadPath + "'";
+                        str += " data-uuid='" + obj.uuid + "' data-filename='" + obj.fileName + "' data-type='" + obj.image + "'"
+                        str += " ><div>";
+                        str += "<span>" + obj.fileName + "</span>";
+                        str += "&nbsp;<button type='button' data-file=\'" + fileCallPath + "\' data-type='file' class='btn btn-warning btn-xs'><i class='fa fa-times'></i></button><br>";
+                        str += "<img src='/img/attach.png'>";
+                        str += "</div>";
+                        str += "</li>";
+                    }
+                });
+                uploadUL.append(str);
+            }
+
+            $(".uploadResult").on("click","button",function (e) {
+                if(confirm("Remove this file?")){
+                    var targetLi=$(this).closest("li");
+                    targetLi.remove();
+                }
+            })
+
 
         });
     </script>

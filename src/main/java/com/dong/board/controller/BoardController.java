@@ -73,17 +73,23 @@ public class BoardController {
     @GetMapping("/modify")
     public void modify(Long bno, @ModelAttribute("pageDto") PageDto pageDto, Model model) {
         log.info("Modify bno: " + bno);
-
         boardRepository.findById(bno).ifPresent(board -> model.addAttribute("board", board));
     }
 
     @PostMapping("/modify")
+    @Transactional
     public String modify(Board board, PageDto pageDto, RedirectAttributes rttr) {
         boardRepository.findById(board.getBno()).ifPresent(origin -> {
+            boardAttachRepository.deleteByBno(origin.getBno());
+
             origin.setTitle(board.getTitle());
             origin.setContent(board.getContent());
 
             boardRepository.save(origin);
+            board.getAttachList().forEach(boardAttach -> {
+                boardAttach.changeBoard(origin);
+                boardAttachRepository.save(boardAttach);
+            });
 
             rttr.addFlashAttribute("msg", "success");
             rttr.addAttribute("bno", origin.getBno());
