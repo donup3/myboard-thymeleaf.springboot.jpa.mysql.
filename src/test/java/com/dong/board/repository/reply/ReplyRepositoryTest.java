@@ -38,4 +38,25 @@ class ReplyRepositoryTest {
             });
         });
     }
+
+
+    @Test
+    public void 더미데이터생성2(){
+
+        Long[] arr={331L};
+
+        Arrays.stream(arr).forEach(num->{
+            Board board=new Board();
+            board.setBno(num);
+
+            IntStream.range(0,100).forEach(i->{
+                Reply reply=new Reply();
+                reply.setReplyText("샘플 댓글"+i);
+                reply.setReplyer("샘플replyer"+i);
+                reply.setBoard(board);
+
+                replyRepository.save(reply);
+            });
+        });
+    }
 }

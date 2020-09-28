@@ -63,7 +63,7 @@
                         <!--                        <br>-->
                     </ul>
                 </div>
-                <div class="panel-footer">
+                <div class="panel-footer" id="replypage">
 
                 </div>
             </div>
@@ -119,7 +119,7 @@
     <script th:inline="javascript">
         $(document).ready(function (e) {
             var page = 1;
-            var obj = {bno: [[${board.bno}]], page: page || 1};
+            var obj = {bno: [[${board.bno}]], page: 1};
             var totalReplyCount;
             (function () {
                 replyManger.getAll(obj, printList);
@@ -129,10 +129,11 @@
                 var content = list.result.content;
                 var replyCnt = list.result.totalElements;
                 totalReplyCount = replyCnt;
-
                 var replyUL = $(".chat");
                 if (content == null || content.length == 0) {
+                    console.log("replyUL clear");
                     replyUL.html("");
+                    $("#replypage").html("");
                     return;
                 }
                 var str = "";
@@ -146,7 +147,6 @@
                 }
                 replyUL.html(str);
                 printReplyPage(replyCnt);
-
             }
 
             function printReplyPage(replyCnt) {
@@ -175,7 +175,6 @@
                 }
                 str += "</ul></div>";
                 replyPageFooter.html(str);
-
             }
 
             function formatDate(timeValue) {
@@ -189,6 +188,7 @@
                 replyerObj.val("");
                 $("#mymodal").modal("show");
                 $(".modal-title").text("ADD Reply");
+                $("#delModBtn").hide();
                 mode = "ADD";
             });
 
@@ -204,10 +204,11 @@
                 replyerObj.val("");
             }
 
+            //TODO totalReplyCount를 한타임 늦게 알게됨
             $("#modalBtn").on("click", function (e) {
                 var replyText = replyTextObj.val();
                 var replyer = replyerObj.val();
-
+                totalReplyCount = totalReplyCount + 1;
                 if (mode == "ADD") {
                     page = Math.ceil(totalReplyCount / 10.0);
                     var obj = {replyText: replyText, replyer: replyer, bno: bno, page: page};
@@ -217,8 +218,9 @@
                     });
                 } else if (mode == "MOD") {
                     var obj = {replyText: replyText, bno: bno, rno: rno, page: page};
+                    console.log("mod page: " + page);
                     replyManger.update(obj, function (list) {
-                        alert("댓글이 수정되었습니다.");
+                        alert("댓글이 수정되었습니다.")
                         afterAll(list);
                     });
                 }
@@ -234,9 +236,13 @@
                 replyTextObj.val(replyTextData);
                 $("#mymodal").modal("show");
                 $(".modal-title").text("Modify/Delete Reply");
+                $("#delModBtn").show();
             });
 
             $("#delModBtn").on("click", function (e) {
+                if (totalReplyCount % 10 == 1 && totalReplyCount > 0) {//totalReplyCount가 10의배수보다1이 클때 삭제를 시키면 그전 페이지로 이동하도록함
+                    page = page - 1;
+                }
                 var obj = {bno: bno, rno: rno, page: page};
                 replyManger.remove(obj, function (list) {
                     alert("댓글이 삭제되었습니다.");

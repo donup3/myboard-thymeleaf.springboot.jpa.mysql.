@@ -42,7 +42,7 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository {
             }
         }
 
-        QueryResults<Board> result = queryFactory.selectFrom(board)
+        QueryResults<Board> result1 = queryFactory.selectFrom(board)
                 .orderBy(board.bno.desc())
                 .where(builder)
                 .leftJoin(board.replies).fetchJoin()
@@ -50,8 +50,15 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
-        List<Board> content = result.getResults();
-        long total = result.getTotal();
+        QueryResults<Board> result2 = queryFactory.selectFrom(board)
+                .orderBy(board.bno.desc())
+                .where(builder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<Board> content = result1.getResults();
+        long total = result2.getTotal();
 
         return new PageImpl<>(content,pageable,total);
     }
