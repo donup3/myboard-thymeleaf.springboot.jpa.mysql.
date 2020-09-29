@@ -28,10 +28,6 @@ import java.util.UUID;
 @Controller
 @Log4j2
 public class UploadController {
-    @GetMapping("/uploadAjax")
-    public void uploadAjax() {
-    }
-
     @PostMapping("/uploadAjaxAction")
     @ResponseBody
     public ResponseEntity<List<AttachFileDto>> uploadAjaxPost(MultipartFile[] uploadFile) {

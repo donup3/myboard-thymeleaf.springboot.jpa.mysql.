@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf Security</title>
+</head>
+<body>
+<form method="post">
+    <p>
+        <label>UID</label>
+        <input type="text" name="uid" th:value="${member.uid}" readonly="readonly">
+    </p>
+    <p>
+        <label>Password</label>
+        <input type="text" name="upw" th:value="${member.upw}" readonly="readonly">
+    </p>
+    <p>
+        <label>UNAME</label>
+        <input type="text" name="uname" th:value="${member.uname}" readonly="readonly">
+    </p>
+</form>
+</body>
+</html>

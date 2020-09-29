@@ -13,11 +13,13 @@
 <body>
 <div class="container">
     <div class="page-header">
-        <h1><a th:href="@{list}">Dong's Board</a></h1>
+        <h1><a href="/board/list">Dong's Board</a></h1>
     </div>
 
     <div class="panel panel-default" layout:fragment="content">
-
+        <div class="page-header">
+            <h1><a th:href="@{list}">Dong's Board</a></h1>
+        </div>
     </div>
 
     <div layout:fragment="attach">
@@ -27,6 +29,15 @@
     <div layout:fragment="reply">
 
     </div>
+    <footer class="footer">
+        <span class="copyright">&copy; 2020 Dong's Board</span>
+        <ul class="footer-links list-inline pull-right">
+            <li class="list-inline"><a href="#">About</a></li>
+            <li class="list-inline-item"><a href="#">Terms of Service</a></li>
+            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+            <li class="list-inline-item"><a href="https://github.com/donup3/myboard-thymeleaf.springboot.jpa.mysql." target="_blank">GitHub</a></li>
+        </ul>
+    </footer>
 </div>
 
 <th:block layout:fragment="script">
@@ -85,6 +96,14 @@
 
     .bigPicture img {
         width: 600px;
+    }
+    .footer {
+        width: 100%;
+        font-size: 13px;
+        color: #666;
+        line-height: 40px;
+        border-top: 1px solid #ddd;
+        margin-top: 50px;
     }
 </style>
 <!-- Latest compiled and minified CSS -->
