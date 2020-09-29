@@ -19,7 +19,7 @@
             </div>
             <div class="form-group" th:with="member=${#authentication.principal.member}">
                 <label>Writer</label>
-                <input class="form-control" name="writer" th:value="${member.uname}" readonly="readonly">
+                <input class="form-control" name="writer" th:value="${member.uid}" readonly="readonly">
             </div>
             <button type="submit" class="btn btn-info">Register</button>
             <button type="reset" class="btn btn-warning">Reset</button>

@@ -1,5 +1,6 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="~{layout/layout1}">
 <div layout:fragment="content">
@@ -30,8 +31,10 @@
             <input class="form-control" name="regdate" readonly="readonly"
                    th:value="${#dates.format(board.regdate,'yyyy-MM-dd')}">
         </div>
-        <div class="pull-right">
-            <a th:href="@{modify(page=${pageDto.page},size=${pageDto.size},type=${pageDto.type},keyword=${pageDto.keyword},bno=${board.bno})}"
+        <div class="pull-right"
+             th:with="uid=${#authentication.principal} eq 'anonymousUser' ? 'Guest' : ${#authentication.principal.member.uid}">
+            <a th:if="${uid} eq ${board.writer}"
+               th:href="@{modify(page=${pageDto.page},size=${pageDto.size},type=${pageDto.type},keyword=${pageDto.keyword},bno=${board.bno})}"
                class="btn btn-warning">Modify/Delete
             </a>
             <a th:href="@{list(page=${pageDto.page},size=${pageDto.size},type=${pageDto.type},keyword=${pageDto.keyword},bno=${board.bno})}"

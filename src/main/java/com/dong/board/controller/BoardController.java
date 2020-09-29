@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -69,12 +70,14 @@ public class BoardController {
         boardRepository.findById(bno).ifPresent(board -> model.addAttribute("board", board));
     }
 
+    @Secured(value = {"ROLE_BASIC","ROLE_MANAGER","ADMIN"})
     @GetMapping("/modify")
     public void modify(Long bno, @ModelAttribute("pageDto") PageDto pageDto, Model model) {
         log.info("Modify bno: " + bno);
         boardRepository.findById(bno).ifPresent(board -> model.addAttribute("board", board));
     }
 
+    @Secured(value = {"ROLE_BASIC","ROLE_MANAGER","ADMIN"})
     @PostMapping("/modify")
     @Transactional
     public String modify(Board board, PageDto pageDto, RedirectAttributes rttr) {
@@ -97,6 +100,7 @@ public class BoardController {
         return "redirect:/board/view"+pageDto.getListLink();
     }
 
+    @Secured(value = {"ROLE_BASIC","ROLE_MANAGER","ADMIN"})
     @PostMapping("/delete")
     @Transactional
     public String delete(Long bno, PageDto pageDto, RedirectAttributes rttr) {

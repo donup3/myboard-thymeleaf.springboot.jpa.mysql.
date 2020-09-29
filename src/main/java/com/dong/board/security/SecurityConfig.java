@@ -1,5 +1,6 @@
 package com.dong.board.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,11 +17,11 @@ import javax.sql.DataSource;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private DataSource dataSource;
+    private final UserService userService;
+
+    private final DataSource dataSource;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
