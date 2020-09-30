@@ -18,10 +18,12 @@ var replyManger = (function () {
             url: '/replies/pages/'+bno+"/"+page,
             data: JSON.stringify(obj),
             dataType: 'json',
+            beforeSend: function(xhr){
+                xhr.setRequestHeader(obj.csrf.headerName,obj.csrf.token);
+            },
             contentType: "application/json",
             success:callback
         });
-
     };
 
     var update = function (obj, callback) {
@@ -35,6 +37,9 @@ var replyManger = (function () {
             url: '/replies/pages/'+bno+"/"+page,
             data: JSON.stringify(obj),
             dataType: 'json',
+            beforeSend: function(xhr){
+                xhr.setRequestHeader(obj.csrf.headerName,obj.csrf.token);
+            },
             contentType: "application/json",
             success:callback
         });
@@ -50,6 +55,9 @@ var replyManger = (function () {
             type:'delete',
             url: '/replies/pages/'+bno+"/"+rno+"/"+page,
             dataType: 'json',
+            beforeSend: function(xhr){
+                xhr.setRequestHeader(obj.csrf.headerName,obj.csrf.token);
+            },
             contentType: "application/json",
             success:callback
         });

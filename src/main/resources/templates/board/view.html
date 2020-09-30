@@ -7,6 +7,7 @@
     <div class="panel-heading">
         View Page
     </div>
+    <form th:action="${'/login'}"></form>
     <div class="panel-body">
         <div class="form-group">
             <label>Bno</label>
@@ -83,7 +84,7 @@
                     <label>Reply Text</label>
                     <input type="text" class="form-control" name="replyText">
                     <label>Replyer</label>
-                    <input type="text" class="form-control" name="replyer">
+                    <input type="text" class="form-control" name="replyer" readonly="readonly">
                 </div>
                 <div class="modal-footer">
                     <button id="modalBtn" class="btn btn-info">Save</button>
@@ -185,14 +186,25 @@
                 return date.getFullYear() + "-" + (date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + "-" + date.getDate()
             }
 
+
+            var uid = [[${#authentication.principal} eq 'anonymousUser' ? null : ${#authentication.principal.member.uid}]];
+            var csrf = JSON.parse('[[${_csrf}]]');
             var mode;
             $("#addReplyBtn").on("click", function (e) {
-                replyTextObj.val("");
-                replyerObj.val("");
+                if (uid == null) {
+                    if (confirm("로그인하시겠습니까?")) {
+                        self.location = "/login";
+                    }
+                    return;
+                }
+                replyerObj.val(uid);
                 $("#mymodal").modal("show");
                 $(".modal-title").text("ADD Reply");
                 $("#delModBtn").hide();
+                $("#modalBtn").show();
                 mode = "ADD";
+                replyTextObj.val("");
+
             });
 
             var bno = [[${board.bno}]]
@@ -213,13 +225,13 @@
                 totalReplyCount = totalReplyCount + 1;
                 if (mode == "ADD") {
                     page = Math.ceil(totalReplyCount / 10.0);
-                    var obj = {replyText: replyText, replyer: replyer, bno: bno, page: page};
+                    var obj = {replyText: replyText, replyer: replyer, bno: bno, page: page, csrf: csrf};
                     replyManger.add(obj, function (list) {
                         alert("새로운 댓글이 추가되었습니다.");
                         afterAll(list);
                     });
                 } else if (mode == "MOD") {
-                    var obj = {replyText: replyText, bno: bno, rno: rno, page: page};
+                    var obj = {replyText: replyText, bno: bno, rno: rno, page: page, csrf: csrf};
                     console.log("mod page: " + page);
                     replyManger.update(obj, function (list) {
                         alert("댓글이 수정되었습니다.")
@@ -239,13 +251,18 @@
                 $("#mymodal").modal("show");
                 $(".modal-title").text("Modify/Delete Reply");
                 $("#delModBtn").show();
+                $("#modalBtn").show();
+                if (uid != replyerData.trim()) {
+                    $("#delModBtn").hide();
+                    $("#modalBtn").hide();
+                }
             });
 
             $("#delModBtn").on("click", function (e) {
                 if (totalReplyCount % 10 == 1 && totalReplyCount > 0) {//totalReplyCount가 10의배수보다1이 클때 삭제를 시키면 그전 페이지로 이동하도록함
                     page = page - 1;
                 }
-                var obj = {bno: bno, rno: rno, page: page};
+                var obj = {bno: bno, rno: rno, page: page, csrf: csrf};
                 replyManger.remove(obj, function (list) {
                     alert("댓글이 삭제되었습니다.");
                     afterAll(list);

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class ReplyController {
 
     private final ReplyRepository replyRepository;
 
+    @Secured(value = {"ROLE_BASIC","ROLE_MANAGER","ADMIN"})
     @PostMapping("/{bno}/{page}")
     @Transactional
     public ResponseEntity<PageMaker<Reply>> addReply(@PathVariable("bno")Long bno, @PathVariable("page")int page,@RequestBody Reply reply){
@@ -49,6 +51,7 @@ public class ReplyController {
         return new ResponseEntity<>(new PageMaker(getListByBoard(board,pageable)),HttpStatus.OK);
     }
 
+    @Secured(value = {"ROLE_BASIC","ROLE_MANAGER","ADMIN"})
     @Transactional
     @DeleteMapping("/{bno}/{rno}/{page}")
     public ResponseEntity<PageMaker<Reply>> remove(@PathVariable("bno")Long bno,@PathVariable("page")int page,@PathVariable("rno")Long rno){
@@ -62,6 +65,7 @@ public class ReplyController {
         return new ResponseEntity<>(new PageMaker<>(getListByBoard(board,pageable)),HttpStatus.OK);
     }
 
+    @Secured(value = {"ROLE_BASIC","ROLE_MANAGER","ADMIN"})
     @Transactional
     @PutMapping("/{bno}/{page}")
     public ResponseEntity<PageMaker<Reply>> update(@PathVariable("bno")Long bno,@PathVariable("page")int page,@RequestBody Reply reply){
@@ -82,7 +86,6 @@ public class ReplyController {
     }
 
     private Page getListByBoard(Board board, Pageable pageable) throws RuntimeException{
-//        PageRequest pageRequest = PageRequest.of(page, 10, Sort.Direction.ASC, "rno");
 
         return replyRepository.getRepliesOfBoard(board,pageable);
     }
