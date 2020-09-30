@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +29,12 @@ import java.util.UUID;
 @Controller
 @Log4j2
 public class UploadController {
+
+    @Secured(value = {"ROLE_BASIC","ROLE_MANAGER","ADMIN"})
     @PostMapping("/uploadAjaxAction")
     @ResponseBody
     public ResponseEntity<List<AttachFileDto>> uploadAjaxPost(MultipartFile[] uploadFile) {
+        log.info("UploadController upload!!!----------------");
         String uploadFolder = "C:\\upload";
         String uploadFolderPath = getFolder();
         File uploadPath = new File(uploadFolder, uploadFolderPath);
@@ -111,6 +115,7 @@ public class UploadController {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
+    @Secured(value = {"ROLE_BASIC","ROLE_MANAGER","ADMIN"})
     @DeleteMapping("/deleteFile")
     @ResponseBody
     public ResponseEntity<String> deleteFile(String fileName,String type){

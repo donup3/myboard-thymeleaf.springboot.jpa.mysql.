@@ -34,8 +34,9 @@
                     File Attach
                 </div>
                 <div class="panel-body">
-                    <div  id="uploadDiv" class="form-group">
+                    <div id="uploadDiv" class="form-group">
                         <input type="file" name="uploadFile" multiple>
+
                     </div>
                     <div class="uploadResult">
                         <ul>
@@ -82,8 +83,9 @@
             }
 
             var cloneUploadDiv = $("#uploadDiv").clone();
-
+            var csrf = JSON.parse('[[${_csrf}]]');
             $("input[type='file']").change(function (e) {
+                console.log("file change!!")
                 var formData = new FormData();
                 var inputFile = $("input[name='uploadFile']");
                 var files = inputFile[0].files;
@@ -94,13 +96,17 @@
                     }
                     formData.append("uploadFile", files[i]);
                 }
-
+                console.log("------")
+                console.log("csrf: " + csrf);
                 $.ajax({
                     url: '/uploadAjaxAction',
                     processData: false,
                     contentType: false,
                     data: formData,
                     type: 'POST',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(csrf.headerName, csrf.token);
+                    },
                     dataType: 'json',
                     success: function (result) {
                         console.log(result)
@@ -155,6 +161,9 @@
                     url: '/deleteFile',
                     data: {fileName: targetFile, type: type},
                     dataType: 'text',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(csrf.headerName, csrf.token);
+                    },
                     type: 'delete',
                     success: function (result) {
                         alert(result);
