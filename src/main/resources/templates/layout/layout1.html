@@ -1,5 +1,6 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
@@ -14,8 +15,20 @@
 <div class="container">
     <div class="page-header">
         <h1><a href="/board/list">Dong's Board</a></h1>
-    </div>
 
+    </div>
+    <nav class="navbar navbar-form">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right" th:with="uid=${#authentication.principal} eq 'anonymousUser' ? 'Guest' :'User'">
+                    <li><a href="/board/list">Dong</a></li>
+                    <li><a th:if="${uid} eq Guest" href="/member/join">회원가입</a></li>
+                    <li><a th:if="${uid} eq Guest" href="/login?dest=/board/list">로그인</a></li>
+                    <li><a th:if="${uid} eq User" href="/logout">로그아웃</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="panel panel-default" layout:fragment="content">
         <div class="page-header">
             <h1><a th:href="@{list}">Dong's Board</a></h1>

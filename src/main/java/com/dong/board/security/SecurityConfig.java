@@ -1,5 +1,6 @@
 package com.dong.board.security;
 
+import com.dong.board.interceptor.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/board/register").hasAnyRole("BASIC", "MANAGER", "ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
-                .formLogin().loginPage("/login")
+                .formLogin().loginPage("/login").successHandler(new LoginSuccessHandler())
                 .and()
                 .exceptionHandling().accessDeniedPage("/accessDenied")
                 .and()

@@ -33,6 +33,6 @@ public class MemberController {
 
         memberRepository.save(member);
 
-        return "/member/joinResult";
+        return "/board/list";
     }
 }

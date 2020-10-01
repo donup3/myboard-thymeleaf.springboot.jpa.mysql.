@@ -54,17 +54,7 @@
                 </div>
                 <div class="panel-body">
                     <ul class="chat" style="margin:0;padding: 0">
-                        <!--                        <li class="left clearfix" data-rno='1' style="list-style: none">-->
-                        <!--                            <div style="margin: 0;padding: 0">-->
-                        <!--                                <div class="header">-->
-                        <!--                                    <strong class="primary-font" style="font-size: 13px">user00</strong>-->
-                        <!--                                    <small class="pull-right text-muted">2020-09-21 12:12</small>-->
-                        <!--                                </div>-->
-                        <!--                                <p style="margin-top: 10px;font-size: 15px">새로운 댓글1</p>-->
-                        <!--                                <hr style="background-color: #00b3ee; margin: 0">-->
-                        <!--                            </div>-->
-                        <!--                        </li>-->
-                        <!--                        <br>-->
+
                     </ul>
                 </div>
                 <div class="panel-footer" id="replypage">
@@ -192,8 +182,9 @@
             var mode;
             $("#addReplyBtn").on("click", function (e) {
                 if (uid == null) {
+                    var selflocation=self.location;
                     if (confirm("로그인하시겠습니까?")) {
-                        self.location = "/login";
+                        self.location = "/login?dest="+encodeURIComponent(selflocation);
                     }
                     return;
                 }
