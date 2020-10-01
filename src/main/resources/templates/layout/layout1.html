@@ -9,7 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Dong's Board</title>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <div class="container">
@@ -20,7 +21,8 @@
     <nav class="navbar navbar-form">
         <div class="container-fluid">
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right" th:with="uid=${#authentication.principal} eq 'anonymousUser' ? 'Guest' :'User'">
+                <ul class="nav navbar-nav navbar-right"
+                    th:with="uid=${#authentication.principal} eq 'anonymousUser' ? 'Guest' :'User'">
                     <li><a href="/board/list">Dong</a></li>
                     <li><a th:if="${uid} eq Guest" href="/member/join">회원가입</a></li>
                     <li><a th:if="${uid} eq Guest" href="/login?dest=/board/list">로그인</a></li>
@@ -48,7 +50,8 @@
             <li class="list-inline"><a href="#">About</a></li>
             <li class="list-inline-item"><a href="#">Terms of Service</a></li>
             <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-            <li class="list-inline-item"><a href="https://github.com/donup3/myboard-thymeleaf.springboot.jpa.mysql." target="_blank">GitHub</a></li>
+            <li class="list-inline-item"><a href="https://github.com/donup3/myboard-thymeleaf.springboot.jpa.mysql."
+                                            target="_blank">GitHub</a></li>
         </ul>
     </footer>
 </div>
@@ -110,6 +113,7 @@
     .bigPicture img {
         width: 600px;
     }
+
     .footer {
         width: 100%;
         font-size: 13px;

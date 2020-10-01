@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().accessDeniedPage("/accessDenied")
                 .and()
-                .logout().logoutUrl("/logout").invalidateHttpSession(true)
+                .logout().logoutUrl("/logout").invalidateHttpSession(true).logoutSuccessUrl("/login")
                 .and()
                 .rememberMe()
                 .key("dong")

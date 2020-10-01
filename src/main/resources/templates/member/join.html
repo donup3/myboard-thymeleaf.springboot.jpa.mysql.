@@ -1,40 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Thymeleaf Security</title>
-</head>
-<body>
-<div class="container">
-    <form method="post">
-        <div class="form-group">
-            <label>UID</label>
-            <input class="form-control" type="text" name="uid" >
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input class="form-control" type="password" name="upw" >
-        </div>
-        <div class="form-group">
-            <label>UNAME</label>
-            <input class="form-control" type="text" name="uname" >
-        </div>
-        <p>
-            <input type="checkbox" name="roles[0].roleName" value="BASIC">BASIC
-            <input type="checkbox" name="roles[1].roleName" value="MANAGER">MANAGER
-            <input type="checkbox" name="roles[2].roleName" value="ADMIN">ADMIN
-        </p>
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        <button type="submit" class="btn">JOIN</button>
-    </form>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="~{layout/layout1}">
+<div layout:fragment="content">
+    <div class="panel-heading">Join Page</div>
+    <div class="panel-body">
+        <form method="post">
+            <div class="form-group">
+                <label>UID</label>
+                <input class="form-control" type="text" name="uid">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input class="form-control" type="password" name="upw">
+            </div>
+            <div class="form-group">
+                <label>UNAME</label>
+                <input class="form-control" type="text" name="uname">
+            </div>
+            <p>
+                <input type="checkbox" name="roles[0].roleName" value="BASIC" checked>BASIC
+                <input type="checkbox" name="roles[1].roleName" value="MANAGER">MANAGER
+                <input type="checkbox" name="roles[2].roleName" value="ADMIN">ADMIN
+            </p>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" class="btn btn-primary pull-right">JOIN</button>
+        </form>
+    </div>
 </div>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
-</body>
-</html>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
